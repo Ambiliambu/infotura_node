@@ -37,14 +37,7 @@ const mentorSchema=mongoose.Schema({
             ref:'Subject.topic'
                  
         },
-        subject:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Subject'
-        },
-        course:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'Course'
-        },
+       
         branch:{
             type:mongoose.Schema.Types.ObjectId,
             ref:'Branch'

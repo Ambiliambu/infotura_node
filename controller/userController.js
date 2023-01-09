@@ -1,6 +1,7 @@
 const {Mentor}=require('../model/userModel')
 const bcrypt=require('bcryptjs')
-const {generateToken}=require('../utils/generateToken')
+const {generateToken}=require('../utils/generateToken');
+const { Branch } = require('../model/adminModel');
 
 
 const mentorRegister=async(req,res)=>{
@@ -25,7 +26,6 @@ const mentorRegister=async(req,res)=>{
             name,
             subject,
             course,
-            schedule,
             qualification
         })
         res.status(201).json(mentor)
@@ -52,7 +52,6 @@ const mentorLogin=async(req,res)=>{
             name:mentor.name,
             subject:mentor.subject,
             course:mentor.course,
-            schedule:mentor.schedule,
             qualification:mentor.qualification,
             token:generateToken(mentor._id)
 
@@ -68,16 +67,25 @@ const mentorLogin=async(req,res)=>{
 const addSchedule=async(req,res)=>{
      
     if(req.mentor.role==='mentor'){
-       console.log("ooo",req.body);
+
         try {
-
-            console.log("iiiiioo");
-
-            const mentor=await Mentor.updateOne({_id:req.mentor._id},{$push:{"schedule":req.body}})
-            res.status(200).json(mentor)
+         const mentordata=await Branch.find({})
+        //  console.log(mentordata);
+         mentordata.forEach((value)=>{
+            value.schedule.forEach(async(data)=>{
+                // console.log(data);
+                if(data.course===req.mentor.course && data.subject===req.mentor.subject && data.status ){
+              const mentor=await Mentor.findByIdUpdate({_id:req.mentor._id},{$set:{"schedule":req.body}},{new:true})
+              res.status(200).json(mentor)
+                }
+            })
+         })
+         
+            
         } catch (error) {
             res.status(400).json(error.message)
         }
+
 
     }else{
 
